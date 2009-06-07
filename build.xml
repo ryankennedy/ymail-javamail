@@ -1,0 +1,34 @@
+<project basedir="." default="package">
+    <property name="build.dir" value="build"/>
+    <property name="src.output" value="${build.dir}/bin/production/YmailJavaMailProvider"/>
+    <property name="test.output" value="${build.dir}/bin/test/YmailJavaMailProvider"/>
+
+    <path id="deps">
+        <fileset dir="dependencies">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${src.output}"/>
+        <mkdir dir="${test.output}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="src" classpathref="deps" destdir="${src.output}"/>
+        <mkdir dir="${src.output}/META-INF"/>
+        <copy todir="${src.output}/META-INF">
+            <fileset dir="src/META-INF">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="package" depends="compile">
+        <jar basedir="${src.output}" destfile="${build.dir}/ymail.jar"/>
+    </target>
+
+    <target name="clean">
+        <deltree dir="${build.dir}"/>
+    </target>
+</project>

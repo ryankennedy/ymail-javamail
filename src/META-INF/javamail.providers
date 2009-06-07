@@ -1,0 +1,2 @@
+protocol=ymail; type=store; class=com.yahoo.mail.YahooStore; vendor=Ryan Kennedy; version=1.0
+protocol=ymail; type=transport; class=com.yahoo.mail.YahooTransport; vendor=Ryan Kennedy; version=1.0
