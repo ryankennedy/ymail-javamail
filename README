@@ -1,1 +1,4 @@
 A JavaMail provider for Yahoo! Mail.
+
+The provider is in very early stages. At the moment, basic folder operations ought to be working.
+Message support is being worked on. 
