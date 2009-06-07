@@ -14,7 +14,7 @@ public class ImapTest {
 
         Store store = null;
         try {
-            store = session.getStore(new URLName("imaps", "imap.gmail.com", 993, "/", "rckenned@gmail.com", "openhack09"));
+            store = session.getStore(new URLName("imaps", "imap.gmail.com", 993, "/", "username here", "password here"));
             store.connect();
 
             Folder INBOX = store.getFolder("INBOX");
