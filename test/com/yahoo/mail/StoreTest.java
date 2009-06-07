@@ -42,7 +42,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -54,7 +57,10 @@ public class StoreTest {
             store.connect();
         }
         catch(MessagingException e) {
-            TestCase.fail("Connect failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Connect failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -62,7 +68,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -76,7 +85,10 @@ public class StoreTest {
             store.getDefaultFolder().list();
         }
         catch(MessagingException e) {
-            TestCase.fail("Mailbox request failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Mailbox request failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -84,7 +96,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -99,7 +114,10 @@ public class StoreTest {
             store.getDefaultFolder().list("Sen%");
         }
         catch(MessagingException e) {
-            TestCase.fail("Mailbox request failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Mailbox request failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -107,7 +125,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -126,7 +147,10 @@ public class StoreTest {
             TestCase.assertFalse(doesntExist.exists());
         }
         catch(MessagingException e) {
-            TestCase.fail("Mailbox request failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Mailbox request failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -134,7 +158,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -161,7 +188,10 @@ public class StoreTest {
             TestCase.assertFalse(testFolder.exists());
         }
         catch(MessagingException e) {
-            TestCase.fail("Mailbox request failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Mailbox request failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -169,7 +199,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -208,10 +241,16 @@ public class StoreTest {
             inbox.appendMessages(messages);
         }
         catch(MessagingException e) {
-            TestCase.fail("Mailbox request failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Mailbox request failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         catch(UnsupportedEncodingException e) {
-            TestCase.fail("Encoding unsupported, wtf? - " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Encoding unsupported, wtf? - " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -219,7 +258,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -233,7 +275,10 @@ public class StoreTest {
             TestCase.assertFalse(inbox.hasNewMessages());
         }
         catch(MessagingException e) {
-            TestCase.fail("Mailbox request failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Mailbox request failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -241,7 +286,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -270,13 +318,17 @@ public class StoreTest {
 
             Enumeration headers = message.getAllHeaders();
             while(headers.hasMoreElements()) {
-                Header header = (Header)headers.nextElement();
+                Header header = (Header) headers.nextElement();
                 System.out.println(String.format("HEADER - %s: %s", header.getName(), header.getValue()));
             }
+            
             inbox.close(false);
         }
         catch(MessagingException e) {
-            TestCase.fail("Mailbox request failed: " + e.toString());
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
+            TestCase.fail("Mailbox request failed: " + e.toString() + "\n" + stackTrace.toString());
         }
         finally {
             if(store != null && store.isConnected()) {
@@ -284,7 +336,10 @@ public class StoreTest {
                     store.close();
                 }
                 catch(MessagingException e) {
-                    TestCase.fail("Failed to close the store" + e.toString());
+                    StringWriter stackTrace = new StringWriter();
+                    PrintWriter writer = new PrintWriter(stackTrace);
+                    e.printStackTrace(writer);
+                    TestCase.fail("Failed to close the store" + e.toString() + "\n" + stackTrace.toString());
                 }
             }
         }
@@ -300,6 +355,9 @@ public class StoreTest {
             TestCase.assertEquals(YahooStore.class, store.getClass());
         }
         catch(NoSuchProviderException e) {
+            StringWriter stackTrace = new StringWriter();
+            PrintWriter writer = new PrintWriter(stackTrace);
+            e.printStackTrace(writer);
             TestCase.fail("Provider didn't register properly");
         }
 
