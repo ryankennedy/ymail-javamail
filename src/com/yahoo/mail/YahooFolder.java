@@ -152,8 +152,6 @@ public class YahooFolder extends javax.mail.Folder {
             folderInfo.setId(response.getJSONObject("folderInfo").getString("fid"));
             folderInfo.setName(response.getJSONObject("folderInfo").getString("name"));
 
-            // TODO: Fire both or is one sufficient?
-            notifyFolderListeners(FolderEvent.RENAMED);
             notifyFolderRenamedListeners(this);
 
             return true;
