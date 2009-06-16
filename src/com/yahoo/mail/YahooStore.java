@@ -22,7 +22,7 @@ public class YahooStore extends javax.mail.Store {
 
     @Override
     protected boolean protocolConnect(String hostname, int port, String username, String password) throws MessagingException {
-        if(cookies != null) {
+        if(isConnected()) {
             return true;
         }
 
@@ -49,22 +49,36 @@ public class YahooStore extends javax.mail.Store {
 
     @Override
     public void close() throws MessagingException {
-        this.port = 0;
-        this.username = null;
-        this.password = null;
-        this.cookies = null;
-        super.close();
+        if(isConnected()) {
+            this.port = 0;
+            this.username = null;
+            this.password = null;
+            this.cookies = null;
+            super.close();
+        }
     }
 
     public Folder getDefaultFolder() throws MessagingException {
+        if(!isConnected()) {
+            throw new IllegalStateException("Store is not connected");
+        }
+
         return new DefaultFolder(this);
     }
 
     public Folder getFolder(String s) throws MessagingException {
+        if(!isConnected()) {
+            throw new IllegalStateException("Store is not connected");
+        }
+
         return new DefaultFolder(this).getFolder(s);
     }
 
     public Folder getFolder(URLName urlName) throws MessagingException {
+        if(!isConnected()) {
+            throw new IllegalStateException("Store is not connected");
+        }
+
         return new DefaultFolder(this).getFolder(urlName.getFile());
     }
 
