@@ -153,7 +153,7 @@ public class YahooMessage extends MimeMessage {
             }
 
             // part
-            // TODO: handle it
+            parseJsonParts(message.getJSONArray("part"));
 
             // messageId
             if(!headersLoaded && message.has("messageId")) {
@@ -167,6 +167,28 @@ public class YahooMessage extends MimeMessage {
         }
         catch(ClientException e) {
             throw new MessagingException("Client error", e);
+        }
+    }
+
+    private void parseJsonParts(JSONArray jsonArray) throws JSONException, MessagingException {
+        for(int i = 0; i < jsonArray.length(); i++) {
+            JSONObject part = jsonArray.getJSONObject(i);
+            if(part.getString("partId").equals("TEXT")) {
+                if(part.getString("type").equals("multipart")) {
+                    // TODO: Set the datahandler with a multipart data source.
+                }
+                else if(part.getString("type").equals("message")) {
+                    // TODO: Set the datahandler with a message data source.
+                }
+                else if(part.has("text") && part.getString("type").equals("text")) {
+                    // TODO: Do I need to worry about the charset here? What charset will be used to decode the bytes?
+                    content = part.getString("text").getBytes();
+                }
+                else {
+                    // TODO: This must be some binary type that snuck in as the top level type...set the data handler with a "binary" data source.
+                    throw new MessagingException(String.format("Not currently handling this type: %s/%s", part.getString("type"), part.getString("subtype")));
+                }
+            }
         }
     }
 
