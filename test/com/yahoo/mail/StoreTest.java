@@ -235,7 +235,22 @@ public class StoreTest {
             body.addBodyPart(html);
             complexMessage.setContent(body);
 
-            Message messages[] = {simpleMessage, complexMessage};
+            MimeMessage nestedMessage = new MimeMessage(session);
+            nestedMessage.setFrom(new InternetAddress("rckenned_test@yahoo.com", "Ryan Test"));
+            nestedMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("bob@example.com", "Bob Example"));
+            nestedMessage.setSentDate(new Date());
+            nestedMessage.setSubject("this is a test multipart/mixed message", "us-ascii");
+
+            MimeMultipart nested = new MimeMultipart("mixed");
+            MimeBodyPart bodyText = new MimeBodyPart();
+            bodyText.setText("This is a plaintext message with a nested attachment.", "us-ascii", "plain");
+            nested.addBodyPart(bodyText);
+            MimeBodyPart rfc822Message = new MimeBodyPart();
+            rfc822Message.setContent(simpleMessage, "message/rfc822");
+            nested.addBodyPart(rfc822Message);
+            nestedMessage.setContent(nested);
+
+            Message messages[] = {simpleMessage, complexMessage, nestedMessage};
 
             inbox.appendMessages(messages);
         }
