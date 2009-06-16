@@ -14,6 +14,8 @@ import java.io.UnsupportedEncodingException;
 
 public class Client {
     private String url;
+
+    // TODO: Is HttpClient threadsafe?
     private HttpClient client;
 
     public Client(String url, org.apache.commons.httpclient.Cookie cookies[]) {
