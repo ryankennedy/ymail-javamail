@@ -12,7 +12,6 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeBodyPart;
 import java.util.Properties;
 import java.util.Date;
-import java.util.Enumeration;
 import java.io.*;
 
 public class StoreTest {
@@ -303,25 +302,7 @@ public class StoreTest {
 
             inbox.open(YahooFolder.READ_WRITE);
             TestCase.assertTrue(inbox.getMessageCount() > 0);
-            Message message = inbox.getMessage(1);
-            System.out.println("message.toString() = " + message.toString());
-            System.out.println("message.getFrom()[0] = " + message.getFrom()[0]);
-            System.out.println("message.getSubject() = " + message.getSubject());
 
-            System.out.println("message.getReceivedDate() = " + message.getReceivedDate());
-            System.out.println("message.getSentDate() = " + message.getSentDate());
-
-            Address to[] = message.getRecipients(Message.RecipientType.TO);
-            for(Address addr : to) {
-                System.out.println(String.format("To: %s", addr));
-            }
-
-            Enumeration headers = message.getAllHeaders();
-            while(headers.hasMoreElements()) {
-                Header header = (Header) headers.nextElement();
-                System.out.println(String.format("HEADER - %s: %s", header.getName(), header.getValue()));
-            }
-            
             inbox.close(false);
         }
         catch(MessagingException e) {
