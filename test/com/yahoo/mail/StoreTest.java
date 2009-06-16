@@ -328,7 +328,6 @@ public class StoreTest {
 
     private Store createYmailStore(URLName urlname) {
         session = Session.getDefaultInstance(new Properties());
-//        session.addProvider(new Provider(Provider.Type.STORE, "ymail", "com.yahoo.mail.YahooStore", "Yahoo!", "1.0"));
 
         Store store = null;
         try {
