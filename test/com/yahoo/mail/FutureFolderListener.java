@@ -60,6 +60,12 @@ public class FutureFolderListener implements FolderListener, Future<FolderEvent>
         return event;
     }
 
+
+    public synchronized void reset() {
+        event = null;
+        done = false;
+    }
+
     private synchronized void checkEvent(FolderEvent folderEvent) {
         if(folderEvent.getType() == eventType) {
             done = true;
