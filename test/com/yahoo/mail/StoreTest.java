@@ -7,30 +7,25 @@ import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.mail.event.FolderEvent;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutionException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 public class StoreTest {
     @Test
-    public void addFolderListener() {
-        Store store = TestAccounts.getTestStore();
-        try {
-            store.connect();
-        }
-        catch(MessagingException e) {
-            TestCase.fail("Failed to connect store: " + e.toString());
+    public void folderListener() throws MessagingException, TimeoutException, ExecutionException, InterruptedException {
+        Store store = getOpenStore();
+
+        if(store.getFolder("added").exists()) {
+            TestCase.assertTrue(store.getFolder("added").delete(true));
         }
 
-        try {
-            if(store.getFolder("added").exists()) {
-                store.getFolder("added").delete(true);
-            }
-            if(store.getFolder("renamed").exists()) {
-                store.getFolder("renamed").delete(true);
-            }
-        }
-        catch(MessagingException e) {
-            TestCase.fail("Failed to clean up test mailbox prior to testing");
+        if(store.getFolder("renamed").exists()) {
+            TestCase.assertTrue(store.getFolder("renamed").delete(true));
         }
 
         FutureFolderListener createdListener = new FutureFolderListener(FolderEvent.CREATED);
@@ -42,75 +37,149 @@ public class StoreTest {
         FutureFolderListener deletedListener = new FutureFolderListener(FolderEvent.DELETED);
         store.addFolderListener(deletedListener);
 
+        store.getFolder("added").create(Folder.HOLDS_MESSAGES);
+        store.getFolder("added").renameTo(store.getFolder("renamed"));
+        store.getFolder("renamed").delete(true);
+
+        FolderEvent created = createdListener.get(50, TimeUnit.MILLISECONDS);
+        FolderEvent renamed = renamedListener.get(50, TimeUnit.MILLISECONDS);
+        FolderEvent deleted = deletedListener.get(50, TimeUnit.MILLISECONDS);
+
+        TestCase.assertEquals("added", created.getFolder().getName());
+        TestCase.assertEquals("renamed", renamed.getNewFolder().getName());
+        TestCase.assertEquals("renamed", deleted.getFolder().getName());
+
+        store.removeFolderListener(createdListener);
+        store.removeFolderListener(renamedListener);
+        store.removeFolderListener(deletedListener);
+
+        createdListener.reset();
+
+        store.getFolder("added").create(Folder.HOLDS_MESSAGES);
         try {
-            store.getFolder("added").create(Folder.HOLDS_MESSAGES);
-            store.getFolder("added").renameTo(store.getFolder("renamed"));
-            store.getFolder("renamed").delete(true);
+            createdListener.get(50, TimeUnit.MILLISECONDS);
+            TestCase.fail("A created event should never have been sent to this listener");
+        }
+        catch(TimeoutException e) {
+            // Expected
+        }
 
-            FolderEvent created = null;
-            FolderEvent renamed = null;
-            FolderEvent deleted = null;
-            try {
-                created = createdListener.get(50, TimeUnit.MILLISECONDS);
-                renamed = renamedListener.get(50, TimeUnit.MILLISECONDS);
-                deleted = deletedListener.get(50, TimeUnit.MILLISECONDS);
-            }
-            catch(Exception e) {
-                TestCase.fail("Exception waiting for folder events: " + e.toString());
-            }
-
-            TestCase.assertEquals("FolderListener.folderCreated() doesn't appear to have fired", "added", created.getFolder().getName());
-            TestCase.assertEquals("FolderListener.folderRenamed() doesn't appear to have fired", "renamed", renamed.getNewFolder().getName());
-            TestCase.assertEquals("FolderListener.folderDeleted() doesn't appear to have fired", "renamed", deleted.getFolder().getName());
-        }
-        catch(MessagingException e) {
-            TestCase.fail("Failed folder operation: " + e.toString());
-        }
-        finally {
-            store.removeFolderListener(createdListener);
-            store.removeFolderListener(renamedListener);
-            store.removeFolderListener(deletedListener);
-            try {
-                store.close();
-            }
-            catch(MessagingException e) {
-                System.err.println("Failed to close store");
-            }
-        }
+        closeStore(store);
     }
 
     @Test
     public void getDefaultFolder() {
+        Store store = getOpenStore();
 
+        try {
+            Folder defaultFolder = store.getDefaultFolder();
+            TestCase.assertTrue(defaultFolder.exists());
+            TestCase.assertFalse(defaultFolder.isOpen());
+            TestCase.assertNull(defaultFolder.getParent());
+            TestCase.assertNotSame(defaultFolder, store.getDefaultFolder());
+        }
+        catch(MessagingException e) {
+            TestCase.fail("Failed to operate on default folder: " + e.toString());
+        }
+
+        closeStore(store);
     }
 
     @Test
-    public void getFolder() {
+    public void getFolder() throws MessagingException {
+        Store store = getOpenStore();
 
+        if(store.getFolder("test").exists()) {
+            TestCase.assertTrue(store.getFolder("test").delete(false));
+        }
+
+        Folder testFolder = store.getFolder("test");
+        TestCase.assertFalse(testFolder.exists());
+        TestCase.assertNotSame(testFolder, store.getFolder("test"));
+
+        TestCase.assertTrue(testFolder.create(Folder.HOLDS_MESSAGES));
+        testFolder = store.getFolder("test");
+        TestCase.assertTrue(testFolder.exists());
+        TestCase.assertEquals(store.getDefaultFolder(), testFolder.getParent());
+
+        closeStore(store);
     }
 
     @Test
-    public void getPersonalNamespaces() {
+    public void getPersonalNamespaces() throws MessagingException {
+        Store store = getOpenStore();
 
+        Folder personalNamespaces[] = store.getPersonalNamespaces();
+        Folder inbox = store.getFolder("INBOX");
+        if(inbox.exists()) {
+            TestCase.assertTrue(folderExists(inbox, personalNamespaces));
+        }
+
+        closeStore(store);
     }
 
     @Test
-    public void getSharedNamespaces() {
+    public void getSharedNamespaces() throws MessagingException {
+        Store store = getOpenStore();
 
+        Folder sharedNamespaces[] = flattenFolders(store.getSharedNamespaces());
+        Folder personalNamespaces[] = store.getPersonalNamespaces();
+        for(Folder folder : sharedNamespaces) {
+            TestCase.assertFalse(folderExists(folder, personalNamespaces));
+        }
+
+        closeStore(store);
     }
 
     @Test
     public void getUserNamespaces() {
-
+        // TODO: This could be interesting for Yahoo! Small Business accounts.
+        TestCase.fail("Not implemented");
     }
 
-    @Test
-    public void removeFolderListener() {
-
+    private Store getOpenStore() {
+        Store store = TestAccounts.getTestStore();
+        try {
+            store.connect();
+        }
+        catch(MessagingException e) {
+            TestCase.fail("Failed to connect store: " + e.toString());
+        }
+        return store;
     }
 
-    @Test
-    public void removeStoreListener() {
+    private void closeStore(Store store) {
+        try {
+            store.close();
+        }
+        catch(MessagingException e) {
+            System.err.println("Failed to close store");
+        }
+    }
 
+    private boolean folderExists(Folder folder, Folder[] folders) throws MessagingException {
+        for(Folder current : folders) {
+            if(current.equals(folder)) {
+                return true;
+            }
+            else if(current.getType() == Folder.HOLDS_FOLDERS) {
+                if(folderExists(folder, current.list())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private Folder[] flattenFolders(Folder[] folders) throws MessagingException {
+        List<Folder> folderList = new ArrayList<Folder>();
+        for(Folder folder : folders) {
+            folderList.add(folder);
+            if(folder.getType() == Folder.HOLDS_FOLDERS) {
+                folderList.addAll(Arrays.asList(flattenFolders(folder.list())));
+            }
+        }
+        return folderList.toArray(new Folder[folderList.size()]);
     }
 }
