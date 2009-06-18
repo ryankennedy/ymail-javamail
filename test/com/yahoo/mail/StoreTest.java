@@ -80,11 +80,6 @@ public class StoreTest {
     }
 
     @Test
-    public void addStoreListener() {
-        
-    }
-
-    @Test
     public void getDefaultFolder() {
 
     }
