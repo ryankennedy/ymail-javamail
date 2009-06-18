@@ -190,6 +190,11 @@ class DefaultFolder extends javax.mail.Folder {
         return new Message[0];
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DefaultFolder;
+    }
+
     private boolean nameMatches(String pattern, String name) {
         if(pattern.contains("%") || pattern.contains("*")) {
             pattern = pattern.replace("%", ".*").replace("*", ".*");

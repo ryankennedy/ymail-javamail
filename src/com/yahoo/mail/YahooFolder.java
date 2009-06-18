@@ -264,7 +264,7 @@ public class YahooFolder extends javax.mail.Folder {
                     params.put(request);
 
                     Client client = new Client("http://us.mg0.mail.yahoo.com/ws/mail/v1.1/jsonrpc?appid=Ryan", ((YahooStore) getStore()).getCookies());
-                    JSONObject response = client.call("SaveRawMessage", params);
+                    client.call("SaveRawMessage", params);
 
                     notifyMessageAddedListeners(new Message[]{message});
                 }
@@ -287,6 +287,11 @@ public class YahooFolder extends javax.mail.Folder {
 
     public FolderInfo getFolderInfo() {
         return folderInfo;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (obj instanceof YahooFolder) && (((YahooFolder)obj).folderInfo.getId().equals(getFolderInfo().getId()));
     }
 
     @Override
