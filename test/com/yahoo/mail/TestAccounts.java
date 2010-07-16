@@ -1,9 +1,8 @@
 package com.yahoo.mail;
 
-import javax.mail.Store;
-import javax.mail.Session;
-import javax.mail.NoSuchProviderException;
-import javax.mail.URLName;
+import junit.framework.TestCase;
+
+import javax.mail.*;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +37,26 @@ public class TestAccounts {
         catch(NoSuchProviderException e) {
             System.err.println(String.format("Failed to load JavaMail provider for test account (%s): %s", testAccount, e));
             return null;
+        }
+    }
+
+    static Store getOpenStore() {
+        Store store = getTestStore();
+        try {
+            store.connect();
+        }
+        catch(MessagingException e) {
+            TestCase.fail("Failed to connect store: " + e.toString());
+        }
+        return store;
+    }
+
+    static void closeStore(Store store) {
+        try {
+            store.close();
+        }
+        catch(MessagingException e) {
+            System.err.println("Failed to close store");
         }
     }
 }

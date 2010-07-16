@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 public class StoreTest {
     @Test
     public void folderListener() throws MessagingException, TimeoutException, ExecutionException, InterruptedException {
-        Store store = getOpenStore();
+        Store store = TestAccounts.getOpenStore();
 
         if(store.getFolder("added").exists()) {
             TestCase.assertTrue(store.getFolder("added").delete(true));
@@ -64,12 +64,12 @@ public class StoreTest {
             // Expected
         }
 
-        closeStore(store);
+        TestAccounts.closeStore(store);
     }
 
     @Test
     public void getDefaultFolder() {
-        Store store = getOpenStore();
+        Store store = TestAccounts.getOpenStore();
 
         try {
             Folder defaultFolder = store.getDefaultFolder();
@@ -82,12 +82,12 @@ public class StoreTest {
             TestCase.fail("Failed to operate on default folder: " + e.toString());
         }
 
-        closeStore(store);
+        TestAccounts.closeStore(store);
     }
 
     @Test
     public void getFolder() throws MessagingException {
-        Store store = getOpenStore();
+        Store store = TestAccounts.getOpenStore();
 
         if(store.getFolder("test").exists()) {
             TestCase.assertTrue(store.getFolder("test").delete(false));
@@ -102,12 +102,12 @@ public class StoreTest {
         TestCase.assertTrue(testFolder.exists());
         TestCase.assertEquals(store.getDefaultFolder(), testFolder.getParent());
 
-        closeStore(store);
+        TestAccounts.closeStore(store);
     }
 
     @Test
     public void getPersonalNamespaces() throws MessagingException {
-        Store store = getOpenStore();
+        Store store = TestAccounts.getOpenStore();
 
         Folder personalNamespaces[] = store.getPersonalNamespaces();
         Folder inbox = store.getFolder("INBOX");
@@ -115,12 +115,12 @@ public class StoreTest {
             TestCase.assertTrue(folderExists(inbox, personalNamespaces));
         }
 
-        closeStore(store);
+        TestAccounts.closeStore(store);
     }
 
     @Test
     public void getSharedNamespaces() throws MessagingException {
-        Store store = getOpenStore();
+        Store store = TestAccounts.getOpenStore();
 
         Folder sharedNamespaces[] = flattenFolders(store.getSharedNamespaces());
         Folder personalNamespaces[] = store.getPersonalNamespaces();
@@ -128,33 +128,13 @@ public class StoreTest {
             TestCase.assertFalse(folderExists(folder, personalNamespaces));
         }
 
-        closeStore(store);
+        TestAccounts.closeStore(store);
     }
 
     @Test
     public void getUserNamespaces() {
         // TODO: This could be interesting for Yahoo! Small Business accounts.
         TestCase.fail("Not implemented");
-    }
-
-    private Store getOpenStore() {
-        Store store = TestAccounts.getTestStore();
-        try {
-            store.connect();
-        }
-        catch(MessagingException e) {
-            TestCase.fail("Failed to connect store: " + e.toString());
-        }
-        return store;
-    }
-
-    private void closeStore(Store store) {
-        try {
-            store.close();
-        }
-        catch(MessagingException e) {
-            System.err.println("Failed to close store");
-        }
     }
 
     private boolean folderExists(Folder folder, Folder[] folders) throws MessagingException {

@@ -20,6 +20,7 @@ public class ClientTest {
 
         Cookie cookies[] = null;
         try {
+            // TODO: Don't hardcode the user account.
             cookies = LoginScraper.login("rckenned_test", "testing");
         }
         catch(IOException e) {
